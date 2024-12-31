@@ -1,6 +1,7 @@
 # NLP_Cloud_News_Classifier
 Training an NLP model to classify news into 10 categories, embedding the model in a Python Flask Web App interface and deploying it onto AWS Cloud Services.
-**Please refer to the attached PPT for full details**
+
+# Please refer to the attached PPT for full details
 
 ### Main Interface of News Classifier on AWS Cloud Services
 Sample Interface after launching the files on the Gateway API provided by AWS EC2 and Python Flask app
