@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Category Classifier</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('/images/background.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #fetch-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #fetch-button:hover {
+            background-color: #0056b3;
+        }
+        .news-section {
+            margin-top: 20px;
+        }
+        .category {
+            font-size: 20px;
+            font-weight: bold;
+            color: #555;
+            margin-top: 15px;
+        }
+        .news-card {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .timestamp {
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>News Category Classifier</h1>
+        <button id="fetch-button">Fetch Latest News</button>
+        <div id="news-container">
+            <!-- News will be dynamically populated here -->
+        </div>
+    </div>
+
+    <script>
+        const fetchButton = document.getElementById('fetch-button');
+        const newsContainer = document.getElementById('news-container');
+    
+        // Dynamic base URL depending on environment
+        const BASE_URL = window.location.hostname === '18.203.94.4'
+            ? 'http://18.203.94.4:8080/predict'
+            : 'https://abqzsrusub.execute-api.eu-west-1.amazonaws.com/prod/predict';
+    
+        fetchButton.addEventListener('click', async () => {
+            try {
+                // Fetch the latest classified news from the appropriate endpoint
+                const response = await fetch(BASE_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({}),
+                });
+    
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data from API');
+                }
+    
+                const data = await response.json();
+                console.log('API response:': data);
+                renderNews(data.classified_news);
+    
+                // Redirect to the current endpoint
+                window.history.pushState({}, '', BASE_URL);
+            } catch (error) {
+                console.error('Error fetching news:', error);
+                alert('Failed to fetch the latest news. Please try again.');
+            }
+        });
+    
+        function renderNews(newsData) {
+            newsContainer.innerHTML = ''; // Clear previous news
+            const categories = {};
+    
+            // Group news by categories
+            newsData.forEach(news => {
+                const { prediction, title, timestamp } = news;
+                if (!categories[prediction]) {
+                    categories[prediction] = [];
+                }
+                categories[prediction].push({ title, timestamp });
+            });
+    
+            // Render news by category
+            for (const [category, newsList] of Object.entries(categories)) {
+                const section = document.createElement('div');
+                section.className = 'news-section';
+    
+                const categoryHeader = document.createElement('div');
+                categoryHeader.className = 'category';
+                categoryHeader.textContent = category;
+                section.appendChild(categoryHeader);
+    
+                newsList.forEach(news => {
+                    const newsCard = document.createElement('div');
+                    newsCard.className = 'news-card';
+    
+                    const title = document.createElement('div');
+                    title.textContent = news.title;
+                    newsCard.appendChild(title);
+    
+                    const timestamp = document.createElement('div');
+                    timestamp.className = 'timestamp';
+                    timestamp.textContent = `Timestamp: ${news.timestamp}`;
+                    newsCard.appendChild(timestamp);
+    
+                    section.appendChild(newsCard);
+                });
+    
+                newsContainer.appendChild(section);
+            }
+        }
+    </script>    
+</body>
+</html>
