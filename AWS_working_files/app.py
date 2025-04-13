@@ -8,6 +8,7 @@ import uuid
 from apscheduler.schedulers.background import BackgroundScheduler
 import logging
 import pickle
+import os
 from boto3.dynamodb.conditions import Attr
 
 # Initialize Flask App
@@ -120,4 +121,5 @@ def shutdown():
     return "Scheduler stopped successfully", 200
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
