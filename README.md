@@ -1,4 +1,11 @@
 # NLP_Cloud_News_Classifier
+
+[![Live News Classifier](https://img.shields.io/badge/Try%20it%20Live-News%20Classifier-blue?style=for-the-badge)](https://news-classifier.darrendarius.site/)
+
+> **Try the live News Classifier here:** [https://news-classifier.darrendarius.site/](https://news-classifier.darrendarius.site/)
+
+---
+
 Training an NLP model to classify news into 10 categories, embedding the model in a Python Flask Web App interface and deploying it onto AWS Cloud Services.
 
 # Please refer to the attached PPT for full details
